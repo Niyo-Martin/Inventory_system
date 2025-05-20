@@ -1,0 +1,140 @@
+[
+  {
+    "test": "User Registration",
+    "success": true,
+    "timestamp": "2025-05-14T03:27:23.821144",
+    "details": "User created successfully"
+  },
+  {
+    "test": "User Login",
+    "success": true,
+    "timestamp": "2025-05-14T03:27:26.216457",
+    "details": "Token received"
+  },
+  {
+    "test": "Profile Access",
+    "success": true,
+    "timestamp": "2025-05-14T03:27:28.243295",
+    "details": "Profile retrieved with token"
+  },
+  {
+    "test": "Create Supplier",
+    "success": true,
+    "timestamp": "2025-05-14T03:27:30.309724",
+    "details": "Created supplier ID: 11"
+  },
+  {
+    "test": "List Suppliers",
+    "success": true,
+    "timestamp": "2025-05-14T03:27:32.347120",
+    "details": "Retrieved 8 suppliers"
+  },
+  {
+    "test": "Get Supplier Details",
+    "success": true,
+    "timestamp": "2025-05-14T03:27:34.393267",
+    "details": "Supplier details retrieved"
+  },
+  {
+    "test": "Create Product",
+    "success": true,
+    "timestamp": "2025-05-14T03:27:36.435867",
+    "details": "Created product ID: 9"
+  },
+  {
+    "test": "List Products",
+    "success": true,
+    "timestamp": "2025-05-14T03:27:38.467904",
+    "details": "Retrieved 9 products"
+  },
+  {
+    "test": "Update Product",
+    "success": true,
+    "timestamp": "2025-05-14T03:27:40.519963",
+    "details": "Product updated successfully"
+  },
+  {
+    "test": "Add Stock",
+    "success": true,
+    "timestamp": "2025-05-14T03:27:42.589597",
+    "details": "Added stock ID: 5"
+  },
+  {
+    "test": "List Stock",
+    "success": true,
+    "timestamp": "2025-05-14T03:27:44.629017",
+    "details": "Retrieved 4 stock entries"
+  },
+  {
+    "test": "Inbound Transaction",
+    "success": true,
+    "timestamp": "2025-05-14T03:27:46.694510",
+    "details": "Created inbound transaction"
+  },
+  {
+    "test": "Outbound Transaction",
+    "success": true,
+    "timestamp": "2025-05-14T03:27:48.754354",
+    "details": "Created outbound transaction"
+  },
+  {
+    "test": "List Transactions",
+    "success": true,
+    "timestamp": "2025-05-14T03:27:50.786722",
+    "details": "Retrieved 13 transactions"
+  },
+  {
+    "test": "Create Purchase Order",
+    "success": true,
+    "timestamp": "2025-05-14T03:27:52.869154",
+    "details": "Created PO ID: 6"
+  },
+  {
+    "test": "List Purchase Orders",
+    "success": true,
+    "timestamp": "2025-05-14T03:27:54.918388",
+    "details": "Retrieved 6 POs"
+  },
+  {
+    "test": "Update PO Status",
+    "success": false,
+    "timestamp": "2025-05-14T03:27:56.972275",
+    "details": "Failed to update PO status"
+  },
+  {
+    "test": "Stock Summary Report",
+    "success": true,
+    "timestamp": "2025-05-14T03:27:59.007236",
+    "details": "Report generated successfully"
+  },
+  {
+    "test": "Inventory Valuation Report",
+    "success": true,
+    "timestamp": "2025-05-14T03:28:01.038158",
+    "details": "Valuation report generated"
+  },
+  {
+    "test": "Stock Status Report",
+    "success": true,
+    "timestamp": "2025-05-14T03:28:03.068287",
+    "details": "Stock status report generated"
+  },
+  {
+    "test": "Get Alerts",
+    "success": true,
+    "timestamp": "2025-05-14T03:28:05.106167",
+    "details": "Retrieved 0 alerts"
+  },
+  {
+    "test": "Customer Return",
+    "success": false,
+    "timestamp": "2025-05-14T03:28:07.135647",
+    "details": "Failed: No response"
+  },
+  {
+    "test": "List Returns",
+    "success": true,
+    "timestamp": "2025-05-14T03:28:09.166451",
+    "details": "Retrieved 0 returns"
+  }
+]
