@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../api/client";
-import { PackagePlus, Package, Barcode, DollarSign, AlertTriangle, X, RefreshCw, Folder, Filter, XCircle } from "lucide-react";
+import { PackagePlus, Package, Barcode, DollarSign, AlertTriangle, X, RefreshCw, Folder, Filter, XCircle, Download } from "lucide-react";
 import CategorySelector from "../components/categories/CategorySelector";
 
 type Product = {
@@ -113,6 +113,32 @@ export default function Products() {
   // Clear category filter
   const clearCategoryFilter = () => {
     setCategoryFilter("");
+  };
+
+  // Handle XML export
+  const handleExportProductsXml = async () => {
+    try {
+      // If there's a category filter, include it in the exported XML
+      const url = categoryFilter 
+        ? `/xml/products?category_code=${categoryFilter}`
+        : "/xml/products";
+        
+      const success = await api.downloadXML(url, 'products.xml');
+      
+      if (success) {
+        setSuccess('Products exported to XML successfully');
+        
+        // Clear success message after 3 seconds
+        setTimeout(() => {
+          setSuccess("");
+        }, 3000);
+      } else {
+        setError('Failed to export products');
+      }
+    } catch (err) {
+      console.error('Error exporting products:', err);
+      setError('Failed to export products. Please try again.');
+    }
   };
 
   return (
@@ -495,24 +521,47 @@ export default function Products() {
                   : "Product List"}
               </h2>
               
-              <button
-                onClick={loadProducts}
-                style={{
-                  backgroundColor: "#f3f4f6",
-                  color: "#374151",
-                  border: "none",
-                  borderRadius: "4px",
-                  padding: "6px 12px",
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "6px",
-                  fontSize: "14px"
-                }}
-              >
-                <RefreshCw size={16} />
-                Refresh
-              </button>
+              <div style={{ display: "flex", gap: "8px" }}>
+                {/* Export XML button */}
+                <button
+                  onClick={handleExportProductsXml}
+                  style={{
+                    backgroundColor: "#4f46e5", // Indigo color to differentiate
+                    color: "white",
+                    border: "none",
+                    borderRadius: "4px",
+                    padding: "6px 12px",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "6px",
+                    fontSize: "14px"
+                  }}
+                >
+                  <Download size={16} />
+                  Export  as XML
+                </button>
+                
+                {/* Existing refresh button */}
+                <button
+                  onClick={loadProducts}
+                  style={{
+                    backgroundColor: "#f3f4f6",
+                    color: "#374151",
+                    border: "none",
+                    borderRadius: "4px",
+                    padding: "6px 12px",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "6px",
+                    fontSize: "14px"
+                  }}
+                >
+                  <RefreshCw size={16} />
+                  Refresh
+                </button>
+              </div>
             </div>
             
             <div style={{ overflowX: "auto" }}>
