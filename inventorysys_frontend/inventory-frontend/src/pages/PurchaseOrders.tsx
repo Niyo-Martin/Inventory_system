@@ -222,6 +222,16 @@ export default function CreatePurchaseOrder() {
     }
   };
 
+  // Handle XML export - UPDATED to use the new downloadXML method
+  const handleExportPOsXML = () => {
+    api.downloadXML('/xml/purchase-orders', 'purchase_orders.xml')
+      .then(success => {
+        if (!success) {
+          setError("Failed to export purchase orders as XML. Please try again.");
+        }
+      });
+  };
+
   return (
     <div style={{ padding: "20px" }}>
       {/* Header */}
@@ -579,11 +589,36 @@ export default function CreatePurchaseOrder() {
               boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
               overflow: "hidden"
             }}>
-              <div style={{ padding: "16px", borderBottom: "1px solid #e5e7eb" }}>
+              <div style={{ 
+                padding: "16px", 
+                borderBottom: "1px solid #e5e7eb",
+                display: "flex", 
+                justifyContent: "space-between", 
+                alignItems: "center"
+              }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                   <History style={{ color: "#8b5cf6" }} size={24} />
                   <h2 style={{ fontSize: "20px", fontWeight: "600" }}>Recent Purchase Orders</h2>
                 </div>
+                
+                <button
+                  onClick={handleExportPOsXML}
+                  style={{
+                    backgroundColor: "#e0f2fe",
+                    color: "#0369a1",
+                    border: "none",
+                    borderRadius: "4px",
+                    padding: "6px 12px",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "6px",
+                    fontSize: "14px"
+                  }}
+                >
+                  <FileText size={16} />
+                  Export XML
+                </button>
               </div>
               
               <div style={{ padding: "16px" }}>

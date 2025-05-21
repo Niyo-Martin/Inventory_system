@@ -54,12 +54,17 @@ const Dashboard = () => {
         // Get product count
         const productsRes = await api.get('/products');
         
-        // Get low stock items
-        const lowStockRes = await api.get('/reports/stock-status', {
-          params: {
-            status: 'LOW_STOCK'
-          }
-        });
+        // Get alert stats for low stock count and active alerts
+        const alertsStatsRes = await api.get('/alerts/stats');
+        console.log('Alert stats response:', alertsStatsRes.data);
+        
+        // Calculate low stock items total (out_of_stock + low_stock)
+        const lowStockItems = 
+          (alertsStatsRes.data.out_of_stock || 0) + 
+          (alertsStatsRes.data.low_stock || 0);
+        
+        // Use the active alerts count from stats endpoint
+        const activeAlerts = alertsStatsRes.data.active_alerts || 0;
         
         // Get stock valuation
         const valuationRes = await api.get('/reports/valuation');
@@ -67,28 +72,17 @@ const Dashboard = () => {
         // Get recent transactions
         const transactionsRes = await api.get('/transactions');
         
-        // Get active alerts count
-        const alertsRes = await api.get('/alerts', {
-          params: {
-            resolved: false
-          }
-        });
-        
         // Get categories count - add this API call
         const categoriesRes = await api.get('/categories');
         
         // Processing the responses
         const totalProducts = productsRes.data.length;
-        const lowStockItems = Array.isArray(lowStockRes.data) ? lowStockRes.data.length : 0;
         
         // Calculate total value from valuation endpoint
         const totalValue = valuationRes.data.reduce(
           (sum: number, item: any) => sum + (item.total_value || 0), 
           0
         );
-        
-        // Get active alerts count
-        const activeAlerts = Array.isArray(alertsRes.data) ? alertsRes.data.length : 0;
         
         // Get total categories count
         const totalCategories = Array.isArray(categoriesRes.data) ? categoriesRes.data.length : 0;
@@ -295,10 +289,10 @@ const Dashboard = () => {
           <h2 className="section-header text-xl font-semibold text-gray-800 mb-6">Quick Actions</h2>
           <div className="flex justify-end space-x-4 flex-wrap">
             <Link 
-              to="/create-purchase-order" 
+              to="/purchase-orders" 
               className="quick-link-btn bg-blue-500 hover:bg-blue-600 text-white py-3 px-4 rounded-lg text-center transition-colors mb-2"
             >
-              Create Purchase Order
+              Purchase Orders
             </Link>
             <Link 
               to="/products" 

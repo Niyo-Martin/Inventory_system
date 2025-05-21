@@ -1,5 +1,5 @@
 // client.ts
-import axios from "axios";
+import axios, { AxiosInstance } from "axios";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
 
@@ -59,4 +59,48 @@ api.interceptors.response.use(
   }
 );
 
-export default api;
+/**
+ * Helper function to download a blob as a file
+ */
+const downloadBlob = (blob: Blob, filename: string): void => {
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  window.URL.revokeObjectURL(url);
+  document.body.removeChild(a);
+};
+
+/**
+ * Download XML from the specified endpoint
+ * @param url The API endpoint to fetch XML from
+ * @param filename The name to save the file as
+ * @returns Promise<boolean> true if download was successful
+ */
+const downloadXML = async (url: string, filename: string): Promise<boolean> => {
+  try {
+    const response = await api.get(url, {
+      responseType: 'blob',
+      headers: {
+        'Accept': 'application/xml'
+      }
+    });
+    
+    downloadBlob(response.data, filename);
+    return true;
+  } catch (error) {
+    console.error('Error downloading XML:', error);
+    return false;
+  }
+};
+
+// Add downloadXML method to the api object
+interface ApiWithDownload extends AxiosInstance {
+  downloadXML: typeof downloadXML;
+}
+
+(api as ApiWithDownload).downloadXML = downloadXML;
+
+export default api as ApiWithDownload;

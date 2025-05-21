@@ -16,6 +16,8 @@ export default function Stock() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [success, setSuccess] = useState("");
+  const [lowStockCount, setLowStockCount] = useState(0);
+  const [outOfStockCount, setOutOfStockCount] = useState(0);
 
   const [txnEntry, setTxnEntry] = useState<StockEntry | null>(null);
   const [txnType, setTxnType] = useState<"in" | "out" | null>(null);
@@ -33,8 +35,16 @@ export default function Stock() {
   const fetchStockData = async () => {
     setIsLoading(true);
     try {
-      const res = await api.get("/stock");
-      setStockList(res.data);
+      // Fetch stock data
+      const stockRes = await api.get("/stock");
+      setStockList(stockRes.data);
+      
+      // Fetch alert stats for consistent low stock count
+      const alertsStatsRes = await api.get("/alerts/stats");
+      console.log('Stock page - Alert stats response:', alertsStatsRes.data);
+      setLowStockCount(alertsStatsRes.data.low_stock || 0);
+      setOutOfStockCount(alertsStatsRes.data.out_of_stock || 0);
+      
       setError("");
     } catch (err) {
       setError("Failed to load stock data. Please try again.");
@@ -168,7 +178,7 @@ export default function Stock() {
               <p style={{ fontSize: "14px", color: "#6b7280" }}>Products in inventory</p>
             </div>
 
-            {/* Low Stock Items */}
+            {/* Low Stock Items - Updated to match the dashboard */}
             <div style={{ 
               backgroundColor: "white", 
               borderRadius: "8px", 
@@ -182,7 +192,7 @@ export default function Stock() {
                 <h2 style={{ fontSize: "18px", fontWeight: "600" }}>Low Stock Items</h2>
               </div>
               <p style={{ fontSize: "24px", fontWeight: "bold", marginBottom: "8px" }}>
-                {stockList.filter(item => item.quantity < 10).length}
+                {lowStockCount + outOfStockCount}
               </p>
               <p style={{ fontSize: "14px", color: "#6b7280" }}>Products below threshold</p>
             </div>
@@ -245,8 +255,10 @@ export default function Stock() {
                         <td style={{ padding: "12px 16px" }}>{entry.warehouse_name || `Warehouse #${entry.warehouse_id}`}</td>
                         <td style={{ padding: "12px 16px" }}>
                           <span style={{ 
-                            backgroundColor: entry.quantity < 10 ? "#fee2e2" : "#dcfce7",
-                            color: entry.quantity < 10 ? "#b91c1c" : "#065f46",
+                            backgroundColor: entry.quantity === 0 ? "#fee2e2" : 
+                                           (entry.quantity < 10 ? "#fff7ed" : "#dcfce7"),
+                            color: entry.quantity === 0 ? "#b91c1c" : 
+                                  (entry.quantity < 10 ? "#9a3412" : "#065f46"),
                             padding: "4px 8px",
                             borderRadius: "9999px",
                             fontSize: "14px",

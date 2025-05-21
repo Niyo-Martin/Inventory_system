@@ -6,8 +6,51 @@ from app.routers import return_, supplier
 from app.routers import alert
 from fastapi.responses import JSONResponse
 from bson import ObjectId
+import sqlalchemy
+import contextlib
+from app.routers import xml_export
+
 
 app = FastAPI()
+
+# Create tables before the app starts
+@app.on_event("startup")
+def create_tables():
+    # Create tables that don't exist yet
+    Base.metadata.create_all(bind=engine)
+    
+    # For debugging, print the tables that were created
+    inspector = sqlalchemy.inspect(engine)
+    tables = inspector.get_table_names()
+    print(f"Database tables: {tables}")
+    
+    # Explicitly check and create stock_alerts if needed
+    with contextlib.closing(engine.connect()) as conn:
+        # Use MySQL syntax (AUTO_INCREMENT instead of AUTOINCREMENT)
+        conn.execute(sqlalchemy.text("""
+            CREATE TABLE IF NOT EXISTS stock_alerts (
+                alert_id INT AUTO_INCREMENT PRIMARY KEY,
+                product_id INT NOT NULL,
+                warehouse_id INT NOT NULL, 
+                current_quantity INT NOT NULL,
+                threshold INT NOT NULL,
+                alert_type VARCHAR(50) NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                is_resolved BOOLEAN DEFAULT FALSE,
+                resolved_at TIMESTAMP NULL,
+                FOREIGN KEY (product_id) REFERENCES products(product_id),
+                FOREIGN KEY (warehouse_id) REFERENCES warehouses(warehouse_id)
+            )
+        """))
+        conn.commit()
+        
+        # Check if stock_alerts exists in the table list
+        has_table = "stock_alerts" in inspector.get_table_names()
+        
+        if has_table:
+            print("stock_alerts table exists")
+        else:
+            print("WARNING: Failed to create stock_alerts table")
 
 # Add this custom JSON response class for handling MongoDB ObjectId
 class CustomJSONResponse(JSONResponse):
@@ -53,6 +96,7 @@ app.include_router(report.router, prefix="/reports", tags=["Reports"])
 app.include_router(return_.router, prefix="/returns", tags=["Returns"])
 app.include_router(supplier.router)  # Router already has prefix="/suppliers"
 app.include_router(alert.router, prefix="/alerts", tags=["Alerts"])
+app.include_router(xml_export.router)
 
 # Conditionally load MongoDB-related components
 try:
